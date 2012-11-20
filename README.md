@@ -22,3 +22,5 @@ This extension will allow DotNetNuke to leverage the features of the WET Framewo
 <li>More modules that use the WET extensions</li>
 <li>Include the multlingual text and html module with the package</li>
 </ul>
+
+<img src="https://raw.github.com/wet-boew/wet-boew-dotnetnuke/master/Demo.png" />
