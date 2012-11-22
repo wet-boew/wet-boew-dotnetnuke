@@ -27,8 +27,6 @@ ______________________________________________
 http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js
 http://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js
 
-- Remove id="Head" from default.aspx in the root of the DNN site, hopefully this is not a requirement in the future.  Right now it is needed for IE 8.
-
 - <div id="wb-body"> </div> needs to be added AROUND the dnn:Form tag in default.aspx.  Hopefully this is not needed in the future as well.
 
 - Start with a clean portal.css file for each portal
@@ -41,6 +39,9 @@ http://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js
 .*en-CA(.*)  TO   $1?lang=eng
 .*en-US(.*)  TO   $1?lang=eng
 
+- The Default Search Tab needs to be set in Portal Site Settings for the search button to work, the Home Tab needs to be set or the breadcrumbs will throw an error for admin.
+
+- For Chrome you need to add the favicon.ico to the portal site settings
 
 ______________________________________________
 
@@ -62,15 +63,10 @@ ______________________________________________
 Extra Notes
 ______________________________________________
 
-- For Chrome you need to add the favicon.ico to the portal site settings
-
 - Does not work well for editing the site in IE8, the JS slows it down
-
-- The Default Search Tab needs to be set in Portal Site Settings for the search button to work
 
 - Does not currently match the WPSS language settings
 
-
-
+- Create a DNN config file with WET classes in it
 
 
