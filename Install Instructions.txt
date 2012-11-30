@@ -39,7 +39,7 @@ http://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js
 .*en-CA(.*)  TO   $1?lang=eng
 .*en-US(.*)  TO   $1?lang=eng
 
-- The Default Search Tab needs to be set in Portal Site Settings for the search button to work, the Home Tab needs to be set or the breadcrumbs will throw an error for admin.
+- The default tabs need to be set in the Admin settings for Search and Home id, this has to be done in each language used.
 
 - For Chrome you need to add the favicon.ico to the portal site settings
 
