@@ -45,6 +45,13 @@ http://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js
 
 ______________________________________________
 
+Module - Login
+______________________________________________
+
+You may need to add a site reference for System.DirectoryServices in order for this module to work
+
+______________________________________________
+
 Setting Site Metadata
 ______________________________________________
 
