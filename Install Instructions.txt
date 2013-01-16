@@ -12,17 +12,22 @@ ______________________________________________
 - Update the Host/Admin skins to use HOST: CLF - Layout skin
 
 - Ensure you have the following in your web.config in System.Webservers 
-(may not be needed for all sites).  There are alternatives to this if you don't have IIS 7.
+(may not be needed for all sites).  There are alternatives to this if you don't have IIS 7 and for ensuring videos play properly.
 
-    <httpProtocol>
-      <customHeaders>
-        <clear />
-        <add name="X-UA-Compatible" value="IE=Edge" />
-      </customHeaders>
-    </httpProtocol>
+<staticContent>
+    <clientCache cacheControlMode="UseMaxAge" cacheControlMaxAge="7.00:00:00" />
+    <mimeMap fileExtension=".mp4" mimeType="video/mp4" />
+    <mimeMap fileExtension=".webm" mimeType="video/webm" />
+</staticContent>
+<httpProtocol>
+  <customHeaders>
+    <clear />
+    <add name="X-UA-Compatible" value="IE=Edge" />
+  </customHeaders>
+</httpProtocol>
 
 
-- Make sure you're using the latest version of Jquery and Jquery UI in the host settings.  Use this hosted version to check.  You can also link these to the WET jquery file, or use the default DNN jquery file (just ensure the WET and DNN both work with the jquery file used)
+- Depending on your version of Jquery, you may need to make sure you're using the latest version of Jquery and Jquery UI in the host settings.  Use this hosted version to check.  You can also link these to the WET jquery file, or use the default DNN jquery file (just ensure the WET and DNN both work with the jquery file used)
 
 http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js
 http://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js
@@ -42,6 +47,12 @@ http://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js
 - The default tabs need to be set in the Admin settings for Search and Home id, this has to be done in each language used.
 
 - For Chrome you need to add the favicon.ico to the portal site settings
+
+- To use the custom Error page, add this to the web config in place of your current customerrors
+
+<customErrors mode="On" defaultRedirect="~/errorpage.aspx" >
+    <error statusCode="404" redirect="~/portals/_default/skins/clf3/errorpages/404.aspx"/>
+</customErrors>
 
 ______________________________________________
 
@@ -63,7 +74,6 @@ dcterms.issued is the Portal Created on Date
 dcterms.title is the current page Title (french version set through the PWGSC admin bar)
 description is the Portal Description
 dcterms.creater is the Portal Copyright 
-
 
 ______________________________________________
 
