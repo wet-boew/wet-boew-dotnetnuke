@@ -13,6 +13,8 @@ ______________________________________________
 
 - Add these lines to your Host Friendly URL settings for proper URL formatting (this will only happen in user views)
 
+**DOING THIS CAN CAUSE REDIRECT PROBLEMS IN SUB SITE Domains Names**
+
 .*fr-CA(.*)  TO   $1?lang=fra
 .*en-CA(.*)  TO   $1?lang=eng
 .*en-US(.*)  TO   $1?lang=eng
@@ -61,29 +63,6 @@ http://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js
 
 ______________________________________________
 
-Module - Login
-______________________________________________
-
-You may need to add a site reference for System.DirectoryServices in order for this module to work
-
-This module can also work with a web.config app setting for LDAP if you choose
-
-______________________________________________
-
-Setting Site Metadata
-______________________________________________
-
-- Multilingual meta data can be set in the portal depending on what language you are currently in.
-
-dcterms.subject is the Portal Keywords
-dcterms.modified is the Portal Last Modified On Date
-dcterms.issued is the Portal Created on Date
-dcterms.title is the current page Title (french version set through the PWGSC admin bar)
-description is the Portal Description
-dcterms.creater is the Portal Copyright
-
-______________________________________________
-
 Other Variant Notes
 ______________________________________________
 
@@ -101,4 +80,42 @@ build/images
 - The SKINUserSearch.Text can be updated to link to a different page for the PWGSC Intranet.  All links will have the search parameters added by default ?lang=e&name=searchvalue
 
 - The PWGSC intranet Variant region home page works will show all menu items underneath it, allowing you to customize the menu on the left hand side of it
+
+
+______________________________________________
+
+Module - Login
+______________________________________________
+
+You may need to add a site reference for System.DirectoryServices in order for this module to work
+
+This module can also work with a web.config app setting for LDAP if you choose
+
+______________________________________________
+
+Module - Maintenance
+______________________________________________
+
+The Maintenance extension performs a lot of tasks by default, some overriding those within DNN.  BE CAREFUL WHEN RUNNING ON DEVELOPMENT SERVER, IT DOES SEND EMAILS.
+
+- To have DNN create Log files and FTP them up to a site like Urchin for better statistics, there is a host setting: 'ftp://mydomain/myfolder/;username;password'
+- Create a folder called "Logs" in the /Portals/ folder
+
+- There is a host setting created called "IgnoreFolders", you can mark folders for the maintenance task to ignore by giving it a value like like 'folder1|folder2|folder3|etc'.
+
+- There is a host setting called "AdminFileQuery" which is the query used to determine if file links are being used or not.  It must retrieve in the format "ModuleID","Content".
+
+______________________________________________
+
+Setting Site Metadata
+______________________________________________
+
+- Multilingual meta data can be set in the portal depending on what language you are currently in.
+
+dcterms.subject is the Portal Keywords
+dcterms.modified is the Portal Last Modified On Date
+dcterms.issued is the Portal Created on Date
+dcterms.title is the current page Title (french version set through the PWGSC admin bar)
+description is the Portal Description
+dcterms.creater is the Portal Copyright
 
