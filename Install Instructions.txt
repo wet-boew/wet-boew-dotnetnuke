@@ -1,0 +1,121 @@
+______________________________________________
+
+Install Instructions (includes optional features)
+______________________________________________
+
+**THIS IS CURRENTLY DESIGNED FOR DNN 6, and tested with versions of DNN 6.2.*, certain items may display incorrectly until the setup is complete**
+
+- Install both the skin and container and any modules you want as a HOST extension
+
+- Ensure the WET build folder is in the root of your website (a working build zip folder is included as part of the DNN Github version)
+
+- Update the Host settings admin bar to use the PWGSC bar
+
+- Add these lines to your Host Friendly URL settings for proper URL formatting (this will only happen in user views)
+
+**DOING THIS CAN CAUSE REDIRECT PROBLEMS IN SUB SITE Domains Names**
+
+.*fr-CA(.*)  TO   $1?lang=fra
+.*en-CA(.*)  TO   $1?lang=eng
+.*en-US(.*)  TO   $1?lang=eng
+
+- Update the Host/Admin skins to use HOST: CLF - Layout skin (Use CLF - Layout-SecMenu-Intranet if using the PWGSC Intranet Variant) and the Multilingual Container
+
+- Ensure you have the following in your web.config in System.Webserver
+(may not be needed for all sites).  There are alternatives to this if you don't have IIS 7 and for ensuring videos play properly.
+
+<staticContent>
+    <clientCache cacheControlMode="UseMaxAge" cacheControlMaxAge="7.00:00:00" />
+    <mimeMap fileExtension=".mp4" mimeType="video/mp4" />
+    <mimeMap fileExtension=".webm" mimeType="video/webm" />
+</staticContent>
+<httpProtocol>
+  <customHeaders>
+    <clear />
+    <add name="X-UA-Compatible" value="IE=Edge" />
+  </customHeaders>
+</httpProtocol>
+
+- To use the custom Error page, add this to the web config in place of your current customerrors
+
+<customErrors mode="On" defaultRedirect="~/errorpage.aspx" >
+    <error statusCode="404" redirect="~/portals/_default/skins/clf3/errorpages/404.aspx"/>
+</customErrors>
+
+- Depending on your version of Jquery, you may need to make sure you're using the latest version of Jquery and Jquery UI in the Host Settings.  Use this hosted version to check.  You can also link these to the WET jquery file, or use the default DNN jquery file (just ensure the WET and DNN both work with the jquery file used)
+
+http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js
+http://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js
+
+- <div id="wb-body"> </div> needs to be added AROUND the dnn:Form tag in default.aspx at the root of the site.
+
+- Start with a clean portal.css file for each portal
+
+- Use the included default.css file in portals/_default (removes font sizes and things like that), this prevents DNN from overriding the WET CSS.
+
+- You'll likely need to clear your cache at this point to ensure things are displaying right, CTRL F5
+
+- The default tabs need to be set in the Admin settings for Search and HomeId, this has to be done in each language used.
+
+- For Chrome you need to add the favicon.ico to the portal site settings
+
+- The Admin Module List is currently set to only display "Common" category modules to non administrators.
+
+______________________________________________
+
+Other Variant Notes
+______________________________________________
+
+- If you only have one language in the site, the Language link can be changed in the Resources file SKINLanguageOverride.Text
+
+- If you are using the PWGSC Intranet variant, you will need to include these additional folders in the build folder (they can be found in the Regions template zip under regions\site\wet3.0)
+
+build/theme-tp-pw-intranet
+build/images
+
+- The SKINBreadLink.Text can be updated to show a different root location, for the PWGSC Intranet link:
+
+<li><a title='Go to mySource' href='Enter in your Source Link Here'>mySource</a></li><li><a title='Go to the Home page' href=[LINK]>Enter in your Region Name Here</a></li>
+
+- The SKINUserSearch.Text can be updated to link to a different page for the PWGSC Intranet.  All links will have the search parameters added by default ?lang=e&name=searchvalue
+
+- The PWGSC intranet Variant region home page works will show all menu items underneath it, allowing you to customize the menu on the left hand side of it
+
+
+______________________________________________
+
+Module - Login
+______________________________________________
+
+You may need to add a site reference for System.DirectoryServices in order for this module to work
+
+This module can also work with a web.config app setting for LDAP if you choose
+
+______________________________________________
+
+Module - Maintenance
+______________________________________________
+
+The Maintenance extension performs a lot of tasks by default, some overriding those within DNN.  BE CAREFUL WHEN RUNNING ON DEVELOPMENT SERVER, IT DOES SEND EMAILS.
+
+- To have DNN create Log files and FTP them up to a site like Urchin for better statistics, there is a host setting: 'ftp://mydomain/myfolder/;username;password'
+- Create a folder called "Logs" in the /Portals/ folder
+
+- There is a host setting created called "IgnoreFolders", you can mark folders for the maintenance task to ignore by giving it a value like like 'folder1|folder2|folder3|etc'.
+
+- There is a host setting called "AdminFileQuery" which is the query used to determine if file links are being used or not.  It must retrieve in the format "ModuleID","Content".
+
+______________________________________________
+
+Setting Site Metadata
+______________________________________________
+
+- Multilingual meta data can be set in the portal depending on what language you are currently in.
+
+dcterms.subject is the Portal Keywords
+dcterms.modified is the Portal Last Modified On Date
+dcterms.issued is the Portal Created on Date
+dcterms.title is the current page Title (french version set through the PWGSC admin bar)
+description is the Portal Description
+dcterms.creater is the Portal Copyright
+
