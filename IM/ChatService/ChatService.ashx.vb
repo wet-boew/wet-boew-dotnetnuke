@@ -1,0 +1,203 @@
+﻿Imports System.Web
+Imports System.Web.Services
+Imports WebMessenger.Data
+
+Public Class ChatService
+    Implements System.Web.IHttpHandler
+
+    Public Sub ProcessRequest(context As HttpContext) Implements IHttpHandler.ProcessRequest
+        Dim method As String = context.Request("method")
+        Dim callback As String = context.Request("callback")
+        context.Response.ContentType = "text/plain"
+        If method = "CheckUsers" Then
+            CheckUsers(context, callback)
+        ElseIf method = "CheckMessages" Then
+            CheckMessages(context, callback)
+        ElseIf method = "CheckRecentMessages" Then
+            CheckRecentMessages(context, callback)
+        ElseIf method = "AddMessage" Then
+            AddMessage(context, callback)
+        ElseIf method = "ChangeStatusMessage" Then
+            ChangeStatusMessage(context, callback)
+        ElseIf method = "LoadSession" Then
+            LoadSession(context, callback)
+        ElseIf method = "UpdateUser" Then
+            UpdateUser(context, callback)
+        ElseIf method = "UpdateStatus" Then
+            UpdateStatus(context, callback)
+        ElseIf method = "GetMessageHistory" Then
+            GetMessageHistory(context, callback)
+        ElseIf method = "DeleteHistory" Then
+            DeleteHistory(context, callback)
+        ElseIf method = "GetGroupChatContacts" Then
+            GetGroupChatContacts(context, callback)
+        ElseIf method = "GetConversationUsers" Then
+            GetConversationUsers(context, callback)
+        ElseIf method = "GetUserID" Then
+            GetUserID(context, callback)
+        Else
+            context.Response.Write(callback & "({ ""response"": ""Add the method to the top of the page"" })")
+        End If
+    End Sub
+
+    Public Sub CheckUsers(context As HttpContext, callback As String)
+        Try
+            Dim da As New ChatDataAccess()
+            Dim Email As String = HttpUtility.UrlDecode(context.Request("Email"))
+            Dim UserName As String = HttpUtility.UrlDecode(context.Request("UserName"))
+            Dim ImageLink As String = HttpUtility.UrlDecode(context.Request("Picture"))
+            Dim varGUID As String = HttpUtility.UrlDecode(context.Request("GUID"))
+            Dim Filter As String = HttpUtility.UrlDecode(context.Request("Filter"))
+            Dim UserId As Integer = da.GetUser(Email, -1, varGUID)
+            'No user exists if -1
+            If UserId = -1 And String.IsNullOrEmpty(UserName) = False And String.IsNullOrEmpty(Email) = False Then
+                da.AddUser(UserName, ImageLink, DateTime.Now, Email, "Online", varGUID)
+            End If
+
+            context.Response.Write(callback & "({ ""response"": """ & da.CheckUsers(Email, Filter) & """ })")
+        Catch ex As Exception
+            context.Response.Write(callback & "({ ""error"": """ & ex.Message & """ })")
+        End Try
+    End Sub
+
+    Public Sub GetUserID(context As HttpContext, callback As String)
+        Try
+            Dim da As New ChatDataAccess()
+            Dim Email As String = HttpUtility.UrlDecode(context.Request("Email"))
+            Dim varGUID As String = HttpUtility.UrlDecode(context.Request("GUID"))
+
+            context.Response.Write(callback & "({ ""response"": """ & da.GetUser(Email, -1, varGUID) & """ })")
+        Catch ex As Exception
+            context.Response.Write(callback & "({ ""error"": """ & ex.Message & """ })")
+        End Try
+    End Sub
+
+    Public Sub UpdateUser(context As HttpContext, callback As String)
+        Try
+            Dim da As New ChatDataAccess()
+            Dim Email As String = HttpUtility.UrlDecode(context.Request("Email"))
+            Dim UserName As String = HttpUtility.UrlDecode(context.Request("UserName"))
+            Dim ImageLink As String = HttpUtility.UrlDecode(context.Request("Picture"))
+            If String.IsNullOrEmpty(UserName) = False And String.IsNullOrEmpty(Email) = False Then
+                da.UpdateUser(UserName, ImageLink, DateTime.Now, Email)
+            End If
+        Catch ex As Exception
+            context.Response.Write(callback & "({ ""error"": """ & ex.Message & """ })")
+        End Try
+    End Sub
+
+    Public Sub LoadSession(context As HttpContext, callback As String)
+        Try
+            Dim da As New ChatDataAccess()
+            Dim Email As String = HttpUtility.UrlDecode(context.Request("Email"))
+            context.Response.Write(callback & da.LoadSession(Email))
+        Catch ex As Exception
+            context.Response.Write(callback & "({ ""error"": """ & ex.Message & """ })")
+        End Try
+    End Sub
+
+    Public Sub UpdateStatus(context As HttpContext, callback As String)
+        Try
+            Dim da As New ChatDataAccess()
+            Dim Email As String = HttpUtility.UrlDecode(context.Request("Email"))
+            Dim Status As String = HttpUtility.UrlDecode(context.Request("Status"))
+            context.Response.Write(callback & da.UpdateStatus(Email, Status))
+        Catch ex As Exception
+            context.Response.Write(callback & "({ ""error"": """ & ex.Message & """ })")
+        End Try
+    End Sub
+
+    Public Sub CheckMessages(context As HttpContext, callback As String)
+        Try
+            Dim FromEmail As String = HttpUtility.UrlDecode(context.Request("FromEmail"))
+            Dim ToID As String = HttpUtility.UrlDecode(context.Request("ToID"))
+            Dim Typing As Boolean = Boolean.Parse(HttpUtility.UrlDecode(context.Request("Typing")))
+            Dim da As New ChatDataAccess()
+            context.Response.Write(callback & da.CheckMessages(FromEmail, ToID, Typing))
+        Catch ex As Exception
+            context.Response.Write(callback & "({ ""error"": """ & ex.Message & """ })")
+        End Try
+    End Sub
+
+    Public Sub CheckRecentMessages(context As HttpContext, callback As String)
+        Try
+            Dim ToEmail As String = HttpUtility.UrlDecode(context.Request("ToEmail"))
+            Dim da As New ChatDataAccess()
+            context.Response.Write(callback & "({ ""response"": """ & da.CheckRecentMessages(ToEmail) & """ })")
+        Catch ex As Exception
+            context.Response.Write(callback & "({ ""error"": """ & ex.Message & """ })")
+        End Try
+    End Sub
+
+    Public Sub AddMessage(context As HttpContext, callback As String)
+        Try
+            Dim da As New ChatDataAccess()
+            Dim FromEmail As String = HttpUtility.UrlDecode(context.Request("FromEmail"))
+            Dim ToID As String = HttpUtility.UrlDecode(context.Request("ToID"))         
+            Dim Message As String = HttpUtility.HtmlEncode(HttpUtility.UrlDecode(context.Request("Message")))
+            da.AddMessage(FromEmail, ToID, Message)
+            context.Response.Write(callback & "({ ""response"": ""Added"" })")
+        Catch ex As Exception
+            context.Response.Write(callback & "({ ""error"": """ & ex.Message & """ })")
+        End Try
+    End Sub
+
+    Public Sub ChangeStatusMessage(context As HttpContext, callback As String)
+        Try
+            Dim da As New ChatDataAccess()
+            Dim Message As String = HttpUtility.HtmlEncode(HttpUtility.UrlDecode(context.Request("Message")))
+            Dim Email As String = HttpUtility.UrlDecode(context.Request("Email"))
+            da.ChangeStatusMessage(Message, Email)
+        Catch ex As Exception
+            context.Response.Write(callback & "({ ""error"": """ & ex.Message & """ })")
+        End Try
+    End Sub
+
+    Public Sub GetMessageHistory(context As HttpContext, callback As String)
+        Try
+            Dim da As New ChatDataAccess()
+            Dim Email As String = HttpUtility.UrlDecode(context.Request("Email"))
+            context.Response.Write(callback & "({ ""response"": """ & da.GetMessageHistory(Email).Replace("'", "") & """ })")
+        Catch ex As Exception
+            context.Response.Write(callback & "({ ""error"": """ & ex.Message & """ })")
+        End Try
+    End Sub
+
+    Public Sub DeleteHistory(context As HttpContext, callback As String)
+        Try
+            Dim da As New ChatDataAccess()
+            Dim Email As String = HttpUtility.UrlDecode(context.Request("Email"))
+            da.DeleteHistory(Email)
+        Catch ex As Exception
+            context.Response.Write(callback & "({ ""error"": """ & ex.Message & """ })")
+        End Try
+    End Sub
+    Public Sub GetGroupChatContacts(context As HttpContext, callback As String)
+        Try
+            Dim da As New ChatDataAccess()
+            Dim Email As String = HttpUtility.UrlDecode(context.Request("Email"))
+            Dim Filter As String = HttpUtility.UrlDecode(context.Request("Filter"))
+            context.Response.Write(callback & "({ ""response"": """ & da.GetGroupChatContacts(Email, Filter) & """ })")
+        Catch ex As Exception
+            context.Response.Write(callback & "({ ""error"": """ & ex.Message & """ })")
+        End Try
+    End Sub
+
+    Public Sub GetConversationUsers(context As HttpContext, callback As String)
+        Try
+            Dim da As New ChatDataAccess()
+            Dim FromEmail As String = HttpUtility.UrlDecode(context.Request("FromEmail"))
+            Dim ToID As String = HttpUtility.UrlDecode(context.Request("ToID"))
+            context.Response.Write(callback & "({ ""response"": """ & da.GetConversationUsers(FromEmail, ToID) & """ })")
+        Catch ex As Exception
+            context.Response.Write(callback & "({ ""error"": """ & ex.Message & """ })")
+        End Try
+    End Sub
+
+    Public ReadOnly Property IsReusable() As Boolean Implements IHttpHandler.IsReusable
+        Get
+            Return False
+        End Get
+    End Property
+
+End Class

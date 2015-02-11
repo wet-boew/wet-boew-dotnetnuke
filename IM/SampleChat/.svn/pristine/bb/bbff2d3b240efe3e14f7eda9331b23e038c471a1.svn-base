@@ -1,0 +1,16 @@
+﻿
+Partial Class Chat
+    Inherits System.Web.UI.Page
+
+    Protected Sub Page_Load(sender As Object, e As System.EventArgs) Handles Me.Load
+        LoadFromAndTo()
+    End Sub
+
+    Protected Sub LoadFromAndTo()
+        If Request.QueryString("ID") <> Nothing Then
+                ltlTo.Text = Request.QueryString("ID").ToString          
+        End If
+            ltlFrom.Text = Session("Email").ToString
+            ltlUserName.Text = Session("UserName").ToString
+    End Sub
+End Class

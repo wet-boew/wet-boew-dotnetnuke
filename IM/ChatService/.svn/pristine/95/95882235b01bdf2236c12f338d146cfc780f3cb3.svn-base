@@ -1,0 +1,317 @@
+﻿Imports System.Data
+Imports System.Configuration
+Imports System.Linq
+Imports System.Web
+Imports System.Web.Security
+Imports System.Web.UI
+Imports System.Web.UI.HtmlControls
+Imports System.Web.UI.WebControls
+Imports System.Web.UI.WebControls.WebParts
+Imports System.Xml.Linq
+Imports System.Collections.Generic
+Imports System.Data.SqlClient
+
+Namespace Data
+    Public Class ChatDataAccess
+        'MESSAGES
+        Public Sub AddMessage(FromEmail As String, ToID As Integer, Message As String)
+            Dim command As New SqlCommand()
+            command.Connection = New SqlConnection(ConfigurationManager.ConnectionStrings("ChatConnectionString").ConnectionString)
+            command.CommandType = CommandType.StoredProcedure
+            command.CommandText = "AddMessage"
+
+            command.Parameters.Add(New SqlParameter("@RoomId", -1))
+            command.Parameters.Add(New SqlParameter("@Message", message))
+            command.Parameters.Add(New SqlParameter("@FromEmail", FromEmail))
+            command.Parameters.Add(New SqlParameter("@ToID", ToID))
+
+            Try
+                command.Connection.Open()
+                command.ExecuteNonQuery()
+            Finally
+                command.Connection.Close()
+            End Try
+        End Sub
+
+        Public Function CheckMessages(FromEmail As String, ToID As Integer) As String
+            Dim Messages As String = ""
+            Dim reader As SqlDataReader
+            Dim command As New SqlCommand()
+            Dim LastMessageDate As DateTime = "January 1, 2000"
+            command.Connection = New SqlConnection(ConfigurationManager.ConnectionStrings("ChatConnectionString").ConnectionString)
+            command.CommandType = CommandType.StoredProcedure
+            command.CommandText = "CheckMessages"
+
+            command.Parameters.Add(New SqlParameter("@FromEmail", FromEmail))
+            command.Parameters.Add(New SqlParameter("@ToID", ToID))
+
+            Try
+                command.Connection.Open()
+                reader = command.ExecuteReader()
+                While reader.Read()
+                    If reader.Item("Email").ToString <> FromEmail Then
+                        If IsDate(reader.Item("MessageDate").ToString) Then
+                            If DateTime.Parse(reader.Item("MessageDate").ToString) > LastMessageDate Then
+                                LastMessageDate = DateTime.Parse(reader.Item("MessageDate").ToString)
+                            End If
+                        End If
+                    End If
+                    Messages = Messages & "<li><b>" & reader("UserName").ToString() & "</b> " & reader("MessageBody").ToString() & "</li>"
+                End While
+            Finally
+                command.Connection.Close()
+            End Try
+            Dim Month, Day, Hour, Minute, Second As String
+            Month = LastMessageDate.Month
+            Day = LastMessageDate.Day
+            Hour = LastMessageDate.Hour
+            Minute = LastMessageDate.Minute
+            Second = LastMessageDate.Second
+            If LastMessageDate.Month < 10 Then Month = "0" & Month
+            If LastMessageDate.Day < 10 Then Day = "0" & Day
+            If LastMessageDate.Hour < 10 Then Hour = "0" & Hour
+            If LastMessageDate.Minute < 10 Then Minute = "0" & Minute
+            If LastMessageDate.Second < 10 Then Second = "0" & Second
+            Messages = "({ ""lastmessage"": """ & LastMessageDate.Year & Month & Day & Hour & Minute & Second & """,""response"": """ & "<ul>" & Messages & "</ul>" & """ })"
+            Return Messages
+        End Function
+
+        Public Function LoadSession(Email As String) As String
+            Dim ReturnValue As String = ""
+            Dim command As New SqlCommand()
+            command.Connection = New SqlConnection(ConfigurationManager.ConnectionStrings("ChatConnectionString").ConnectionString)
+            command.CommandType = CommandType.StoredProcedure
+            command.CommandText = "GetStartupInfo"
+            command.Parameters.Add(New SqlParameter("@Email", Email))
+            Try
+                command.Connection.Open()
+                Dim reader As SqlDataReader = command.ExecuteReader
+                While reader.Read
+                    ReturnValue = "({ ""userstatus"": """ & reader.Item("Status") & """,""userstatusmessage"": """ & reader.Item("StatusMessage") & """ })"
+                End While
+            Finally
+                command.Connection.Close()
+            End Try
+            Return ReturnValue
+        End Function
+
+        Public Function UpdateStatus(Email As String, Status As String) As String
+            Dim ReturnValue As String = ""
+            Dim command As New SqlCommand()
+            command.Connection = New SqlConnection(ConfigurationManager.ConnectionStrings("ChatConnectionString").ConnectionString)
+            command.CommandType = CommandType.StoredProcedure
+            command.CommandText = "UpdateStatus"
+            command.Parameters.Add(New SqlParameter("@Email", Email))
+            command.Parameters.Add(New SqlParameter("@Status", Status))
+            Try
+                command.Connection.Open()
+                command.ExecuteNonQuery()
+            Finally
+                command.Connection.Close()
+            End Try
+            Return ReturnValue
+        End Function
+
+        Public Function CheckRecentMessages(ToEmail As String) As String
+            Dim NewMessages As String = ""
+            Dim reader As SqlDataReader
+            Dim command As New SqlCommand()
+            command.Connection = New SqlConnection(ConfigurationManager.ConnectionStrings("ChatConnectionString").ConnectionString)
+            command.CommandType = CommandType.StoredProcedure
+            command.CommandText = "CheckRecentMessages"
+
+            command.Parameters.Add(New SqlParameter("@ToEmail", ToEmail))
+
+            Try
+                command.Connection.Open()
+                reader = command.ExecuteReader()
+                While reader.Read()
+                    NewMessages = NewMessages & reader.Item("UserId").ToString & ";"
+                End While
+            Finally
+                command.Connection.Close()
+            End Try
+            Return NewMessages
+        End Function
+
+        Public Function GetMessageHistory(Email As String) As String
+            Dim ReturnValue As String = "<table class='HistoryTable'><tr><th>Time</th><th>From</th><th>To</th><th>Message</th></tr>"
+            Dim reader As SqlDataReader
+            Dim command As New SqlCommand()
+            command.Connection = New SqlConnection(ConfigurationManager.ConnectionStrings("ChatConnectionString").ConnectionString)
+            command.CommandType = CommandType.StoredProcedure
+            command.CommandText = "GetMessageHistory"
+            command.Parameters.Add(New SqlParameter("@Email", Email))
+            Try
+                command.Connection.Open()
+                reader = command.ExecuteReader()
+                While reader.Read()
+                    ReturnValue = ReturnValue & "<tr><td>" & reader("MessageDate").ToString() & "</td><td>" & reader("FromUser").ToString() & "</td><td>" & reader("ToUser").ToString() & "</td><td>" & reader("MessageBody").ToString() & "</td></tr>"
+                End While
+                ReturnValue = ReturnValue & "</table>"
+            Finally
+                command.Connection.Close()
+            End Try
+            Return ReturnValue
+        End Function
+
+        Public Function DeleteHistory(Email As String)
+            Dim ReturnValue As String = ""
+            Dim command As New SqlCommand()
+            command.Connection = New SqlConnection(ConfigurationManager.ConnectionStrings("ChatConnectionString").ConnectionString)
+            command.CommandType = CommandType.StoredProcedure
+            command.CommandText = "DeleteHistory"
+            command.Parameters.Add(New SqlParameter("@Email", Email))
+            Try
+                command.Connection.Open()
+                command.ExecuteNonQuery()
+            Finally
+                command.Connection.Close()
+            End Try
+            Return ReturnValue
+        End Function
+
+        'USERS
+        Public Sub AddUser(UserName As String, ImageLink As String, LastActive As DateTime, Email As String, Status As String)
+            Dim command As New SqlCommand()
+
+            command.Connection = New SqlConnection(ConfigurationManager.ConnectionStrings("ChatConnectionString").ConnectionString)
+            command.CommandType = CommandType.StoredProcedure
+            command.CommandText = "AddUser"
+            command.Parameters.Add(New SqlParameter("@UserName", UserName))
+            command.Parameters.Add(New SqlParameter("@ImageLink", ImageLink))
+            command.Parameters.Add(New SqlParameter("@Email", Email))
+            command.Parameters.Add(New SqlParameter("@Status", Status))
+            command.Parameters.Add(New SqlParameter("@LastActive", LastActive))
+
+            Try
+                command.Connection.Open()
+                command.ExecuteNonQuery()
+            Finally
+                command.Connection.Close()
+            End Try
+        End Sub
+
+        Public Sub UpdateUser(UserName As String, ImageLink As String, LastActive As DateTime, Email As String)
+            Dim command As New SqlCommand()
+
+            command.Connection = New SqlConnection(ConfigurationManager.ConnectionStrings("ChatConnectionString").ConnectionString)
+            command.CommandType = CommandType.StoredProcedure
+            command.CommandText = "UpdateUser"
+            command.Parameters.Add(New SqlParameter("@UserName", UserName))
+            command.Parameters.Add(New SqlParameter("@ImageLink", ImageLink))
+            command.Parameters.Add(New SqlParameter("@Email", Email))
+            command.Parameters.Add(New SqlParameter("@LastActive", LastActive))
+            Try
+                command.Connection.Open()
+                command.ExecuteNonQuery()
+            Finally
+                command.Connection.Close()
+            End Try
+        End Sub
+
+        Public Function CheckUsers(Email As String) As String
+            Dim UserList As String = ""
+            Dim reader As SqlDataReader
+            Dim ds As New DataSet()
+            Dim command As New SqlCommand()
+            command.Connection = New SqlConnection(ConfigurationManager.ConnectionStrings("ChatConnectionString").ConnectionString)
+            command.CommandType = CommandType.StoredProcedure
+            command.CommandText = "CheckUsers"
+            command.Parameters.Add(New SqlParameter("@Email", Email))
+            Try
+                command.Connection.Open()
+                reader = command.ExecuteReader()
+                While reader.Read()
+                    UserList = UserList & "<tr><td class='tdimage'><img src='" & reader("ImageLink").ToString() & "' class='userimage' /></td>"
+                    UserList = UserList & "<td class='tdstatus'><img src='img/status_" & reader("Status") & ".png' /></td>"
+                    UserList = UserList & "<td class='tduser'><a href='#' onclick='OpenChat(" & reader("ID").ToString() & ");'><div class='userdisplayname'>" & reader("UserName").ToString() & "</div>"
+                    UserList = UserList & "<div class='userstatus'>" & reader("StatusMessage").ToString() & "</div></a></td></tr>"
+                End While
+            Finally
+                command.Connection.Close()
+            End Try
+            Return "<table>" & UserList & "</table>"
+        End Function
+
+        Public Function GetUser(Email As String, ID As Integer) As Integer
+            Dim UserId As Integer = -1
+            Dim ds As New DataSet()
+            Dim command As New SqlCommand()
+            command.Connection = New SqlConnection(ConfigurationManager.ConnectionStrings("ChatConnectionString").ConnectionString)
+            command.CommandType = CommandType.StoredProcedure
+            command.CommandText = "ChatGetUser"
+            command.Parameters.Add(New SqlParameter("@Email", Email))
+            command.Parameters.Add(New SqlParameter("@ID", ID))
+            Try
+                command.Connection.Open()
+                UserId = Integer.Parse(command.ExecuteScalar().ToString())
+            Finally
+                command.Connection.Close()
+            End Try
+            Return UserId
+        End Function
+
+        Public Function ChangeStatusMessage(Message As String, Email As String) As Integer
+            Dim ReturnValue As String = ""
+            Dim command As New SqlCommand()
+            command.Connection = New SqlConnection(ConfigurationManager.ConnectionStrings("ChatConnectionString").ConnectionString)
+            command.CommandType = CommandType.StoredProcedure
+            command.CommandText = "ChangeStatusMessage"
+            command.Parameters.Add(New SqlParameter("@Message", Message))
+            command.Parameters.Add(New SqlParameter("@Email", Email))
+            Try
+                command.Connection.Open()
+                command.ExecuteNonQuery()
+            Finally
+                command.Connection.Close()
+            End Try
+            Return ReturnValue
+        End Function
+
+        Public Function GetGroupChatContacts(Email As String) As String
+            Dim ReturnValue As String = ""
+            Dim reader As SqlDataReader
+            Dim command As New SqlCommand()
+            command.Connection = New SqlConnection(ConfigurationManager.ConnectionStrings("ChatConnectionString").ConnectionString)
+            command.CommandType = CommandType.StoredProcedure
+            command.CommandText = "GetGroupChatContacts"
+            command.Parameters.Add(New SqlParameter("@Email", Email))
+            Try
+                command.Connection.Open()
+                reader = command.ExecuteReader()
+                While reader.Read()
+                    ReturnValue = ReturnValue & "<li><input type='checkbox' onchange='MaxCheckboxes()' name='CheckBoxList' value='" & reader("ID").ToString() & "' /><img src='" & reader("ImageLink").ToString() & "' class='userimage' /><div class='userdisplayname'>" & reader("UserName").ToString() & "</div></li>"
+                End While              
+            Finally
+                command.Connection.Close()
+            End Try
+            Return "<ul>" & ReturnValue & "</ul>"
+        End Function
+
+        Public Function GetConversationUsers(FromEmail As String, ToID As Integer) As String
+            Dim Users As String = ""
+            Dim reader As SqlDataReader
+            Dim command As New SqlCommand()
+            command.Connection = New SqlConnection(ConfigurationManager.ConnectionStrings("ChatConnectionString").ConnectionString)
+            command.CommandType = CommandType.StoredProcedure
+            command.CommandText = "GetConversationUsers"
+
+            command.Parameters.Add(New SqlParameter("@Email", FromEmail))
+            command.Parameters.Add(New SqlParameter("@ID", ToID))
+
+            Try
+                command.Connection.Open()
+                reader = command.ExecuteReader()
+                While reader.Read()
+                    Users = Users & "<p><img src='" & reader("ImageLink").ToString() & "' /><br />" & reader("UserName").ToString() & "</p>"
+                End While
+            Finally
+                command.Connection.Close()
+            End Try
+            Return Users
+        End Function
+
+    End Class
+End Namespace
+

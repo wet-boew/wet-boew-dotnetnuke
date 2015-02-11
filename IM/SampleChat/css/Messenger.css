@@ -1,0 +1,395 @@
+﻿body
+{
+    margin:0px;
+    font-family: Arial;
+}
+#statmes
+{
+    margin-left: 8px;
+}
+/* Water Mark */
+.watermark {
+   color: #999;
+   font-weight:bold;
+   background-image: url(../img/search.gif);
+   background-repeat: no-repeat;
+   background-position: right;
+   background-size:18px 18px;
+   font-weight:normal;
+}
+#txtFilter
+{
+    border: 1px solid #eee;
+    margin-top: 2px;
+    padding-bottom: 2px;
+}
+/*User Display*/
+.userstatus 
+{
+    font-size:60%;
+    color: #666 !important;
+}
+.userimage 
+{
+    max-width: 30px;
+    max-height:30px;
+}
+#Users td a
+{
+    text-decoration: none;
+    color: #222 !important;
+}
+.userdisplayname
+{
+    font-size:75%;
+}
+#UserList tr:hover td {
+  background-color: #eee; color: #000;
+}
+#UserList
+{
+    border-spacing: 0;
+}
+#Users td
+{
+    vertical-align: top;
+}
+.tdimage
+{
+    text-align:center;
+}
+.tdstatus
+{
+    padding: 0px;
+    padding-top:10px;
+}
+.tdimage
+{
+    padding:5px;    
+    padding-right:0px;  
+}
+.tduser
+{
+    padding:5px;
+}
+.fixed-right #Users img
+{
+    max-width:60px;
+    
+}
+.fixed-right #Users p
+{
+    text-align:center;   
+    padding-right:5px;
+    padding-left:10px; 
+    font-size:90%; 
+}
+.displayname
+{
+    font-weight:bold;
+    color: #494a4a;
+}
+.timestamp
+{
+    color: #808080;    
+    font-size:90%;
+    text-align:right;
+    float:right;
+}
+.fixed-right 
+{
+    position:fixed;
+    right:0px;
+    top:0px;  
+    font-size:90%; 
+    color: #666; 
+    height: 80%;
+    background-color: #FAFCF2;
+    width:17%; 
+    overflow-y:auto;
+}
+
+li 
+{
+  list-style-type:none;
+  margin-left:-15px;
+  padding-bottom: 5px;
+}
+.MessengerAvatar 
+{
+    height: 48px;
+    margin-left: 5px;
+    margin-top: 5px;
+    width: 48px;    
+    border-width: 0;
+}
+.MessengerBars
+{
+    width:100%;
+    height:102px;
+    position:fixed;
+    background: url('/img/bnr-1px.jpg');
+    background-repeat: repeat-x;
+    background-color: #D5E367;
+    min-height: 102px;
+}
+.UserName 
+{
+	float: left;
+	margin-left: 8px;
+	padding:4px;
+	cursor: default;
+    color: white;
+    font-family: Arial;
+    font-size: 14px;
+    font-weight: bold;
+    min-width: 200px;
+    margin-top: 12px;
+}
+.StatusMessage 
+{
+	float: left;
+	margin-left: 8px;
+	padding:4px;
+	cursor: default;
+    font-family: Arial;
+    font-size: 12px;
+    font-weight: bold;
+    color: #2B2B2B;
+}
+.fixed-bottom 
+{
+    position:fixed;
+    bottom:0px;
+    width:100%;
+    background-color: #FAFCF2;
+    height:26%;
+}
+#MessageBox 
+{
+    width:96%; 
+    font-family: Arial;
+    height:80%;
+}
+.MessengerLineButtonHover
+{
+	background: url(../img/buttonhover.png);
+}
+#Messages 
+{
+    font-size: 80%;
+    overflow-y:auto; 
+    position:absolute; 
+    height:74%; 
+    width:83%;  
+    border-right: 5px solid #030303; 
+    z-index:100;
+}
+#Messages ul
+{
+  padding-left:25px;
+  padding-right:10px;
+}
+.MessangerToolbarItem
+{
+	float: left;
+	margin-left: 4px;
+	padding-top: 4px;
+	width: 26px;
+	height: 20px;
+	text-align: center;
+}
+.MessangerToolbarItemHover
+{
+	background: url(../img/buttonhover.png);
+}
+/* ----------------------------Message History---------------------------- */
+#MessageHistory {
+    overflow: auto;
+    height: 500px;
+}
+.HistoryHeader 
+{
+    width: 100%;
+    background-color: #EFE9EF;
+    border-bottom: 2px solid #551155;
+    border-top: 2px solid #551155;
+    margin-bottom: 5px;
+    text-align: center;
+    font-size: 10px;
+    color: #551155;
+    font-weight: bold;
+    padding: 3px 0 3px 0;
+    cursor: default;
+}
+.HistoryTable 
+{
+    margin-left: 5px;
+    width: 587px;
+    border: 2px solid #551155;
+    font-size: 10px;
+    border-collapse: collapse;    
+}
+.HistoryTable td, th
+{
+    padding: 2px 5px 2px 5px;    
+    border:2px solid #551155;
+}
+.HistoryTable th
+{
+    background-color: #AC8AAC; 
+}
+.HistoryTable td
+{
+    background-color: #EFE9EF; 
+    min-width: 120px;
+}
+
+.ui-dialog-title 
+{
+    background-color:white;
+}
+/* ----------------------------Group Chat---------------------------- */
+.groupchatbody {
+    background-color: #FAFCF2;
+    padding: 10px 15px 0 15px;
+}
+#ContactsList img, #Added img
+{
+    margin-bottom:-8px;
+}
+#ContactsList .userdisplayname
+{
+    margin-left: 5px;
+}
+#ContactsList li, #Added li
+{
+    height: 40px;
+}
+#ContactsList
+{
+    padding-bottom:20px;
+}
+
+/* ----------------------------Context Menu---------------------------- */
+.context-menu-list {
+    background: none repeat scroll 0 0 #EEEEEE;
+    border: 1px solid #DDDDDD;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+    display: inline-block;
+    font-family: Verdana,Arial,Helvetica,sans-serif;
+    font-size: 11px;
+    list-style-type: none;
+    margin: 0;
+    max-width: 250px;
+    min-width: 120px;
+    padding: 0;
+    position: absolute;
+}
+.context-menu-item {
+    -moz-user-select: -moz-none;
+    background-color: #EEEEEE;
+    padding: 2px 2px 2px 24px;
+    position: relative;
+}
+.context-menu-separator {
+    border-bottom: 1px solid #DDDDDD;
+    padding-bottom: 0;
+}
+.context-menu-item > label > input, .context-menu-item > label > textarea {
+    -moz-user-select: text;
+}
+.context-menu-item.hover {
+    background-color: #3399FF;
+    cursor: pointer;
+}
+.context-menu-item.disabled {
+    color: #666666;
+}
+.context-menu-input.hover, .context-menu-item.disabled.hover {
+    background-color: #EEEEEE;
+    cursor: default;
+}
+.context-menu-submenu:after {
+    color: #666666;
+    content: ">";
+    position: absolute;
+    right: 3px;
+    top: 0;
+    z-index: 1;
+}
+.context-menu-item.icon {
+    background-position: 4px 2px;
+    background-repeat: no-repeat;
+    min-height: 18px;
+}
+.context-menu-item.icon-online {
+    background-image: url("../img/status_online.png");
+}
+.context-menu-item.icon-away {
+    background-image: url("../img/status_away.png");
+}
+.context-menu-item.icon-busy {
+    background-image: url("../img/status_busy.png");
+}
+.context-menu-item.icon-phone {
+    background-image: url("../img/status_phone.png");
+}
+.context-menu-input > label > * {
+    vertical-align: top;
+}
+.context-menu-input > label > input[type="checkbox"], .context-menu-input > label > input[type="radio"] {
+    margin-left: -17px;
+}
+.context-menu-input > label > span {
+    margin-left: 5px;
+}
+.context-menu-input > label, .context-menu-input > label > input[type="text"], .context-menu-input > label > textarea, .context-menu-input > label > select {
+    -moz-box-sizing: border-box;
+    display: block;
+    width: 100%;
+}
+.context-menu-input > label > textarea {
+    height: 100px;
+}
+.context-menu-item > .context-menu-list {
+    display: none;
+    right: -5px;
+    top: 5px;
+}
+.context-menu-item.hover > .context-menu-list {
+    display: block;
+}
+.context-menu-accesskey {
+    text-decoration: underline;
+}
+.FilterBox
+{
+    margin-top: -5px;
+    margin-left: 20px;
+}
+.open-video
+{
+    float:right;
+    margin-right:2%;
+}
+.WesternChat
+{
+    float: right;
+    height: 30px;
+    padding-bottom: 3px;
+}
+.WesternChatMainPage
+{
+    position: fixed;
+    bottom: 0px;
+    right: 0px;
+    height: 30px;
+}
+.typing
+{
+    color: maroon;
+    font-style:italic;
+    padding-left:10px;
+    padding-bottom:5px;
+}

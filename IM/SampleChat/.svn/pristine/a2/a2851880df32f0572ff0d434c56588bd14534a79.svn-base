@@ -1,0 +1,48 @@
+﻿Imports System.Data.SqlClient
+Imports System.Data
+
+Partial Class Messenger
+    Inherits System.Web.UI.Page
+
+    Protected Sub Page_Load(sender As Object, e As System.EventArgs) Handles Me.Load
+        If Request.QueryString("Email") <> Nothing Then
+            LoadURL()
+        ElseIf Session("Email") <> Nothing Then
+            LoadSession()
+        End If
+    End Sub
+
+    Protected Sub LoadURL()
+        If Request.QueryString("Email") <> Nothing Then
+            Session("Email") = Request.QueryString("Email").ToString
+            ltlEmail.Text = "<div id='Email'>" & Request.QueryString("Email").ToString.Trim & "</div>"
+        End If
+
+        If Request.QueryString("UserName") <> Nothing Then
+            Session("UserName") = Request.QueryString("UserName").ToString
+            ltlUserName.Text = "<div id='UserName'>" & Request.QueryString("UserName").ToString.Trim & "</div>"
+        End If
+
+        If Request.QueryString("ImageLink") <> Nothing Then
+            Session("ImageLink") = Request.QueryString("ImageLink").ToString
+            ltlPicture.Text = "<div id='Picture'>" & Request.QueryString("ImageLink").ToString.Trim & "</div>"
+        End If
+
+        Response.Redirect("/Messenger.aspx")
+    End Sub
+
+    Protected Sub LoadSession()
+        ltlEmail.Text = "<div id='varEmail'>" & Session("Email").ToString.Trim & "</div>"
+        ltlUserName.Text = "<div id='varUserName'>" & Session("UserName").ToString.Trim & "</div>"
+        ltlPicture.Text = "<div id='varImageLink'>" & Session("ImageLink").ToString.Trim & "</div>"
+
+        imgUser.Src = Session("ImageLink")
+
+    End Sub
+
+    Protected Sub MyTimer_Tick(sender As Object, e As System.EventArgs) Handles MyTimer.Tick
+        Session("Email") = Session("Email")
+        Session("UserName") = Session("UserName")
+        Session("ImageLink") = Session("ImageLink")
+    End Sub
+End Class

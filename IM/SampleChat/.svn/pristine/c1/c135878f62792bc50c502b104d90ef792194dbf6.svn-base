@@ -1,0 +1,277 @@
+﻿body
+{
+    margin:0px;
+    font-family: Arial;
+}
+/*User Display*/
+.userstatus 
+{
+    font-size:60%;
+    color: #666 !important;
+}
+.userimage 
+{
+    max-width: 30px;
+    max-height:30px;
+}
+#Users td a
+{
+    text-decoration: none;
+    color: #222 !important;
+}
+.userdisplayname
+{
+    font-size:75%;
+}
+#Users td
+{
+    vertical-align: top;
+}
+#Users table
+{
+    padding: 5px;
+}
+.tdimage
+{
+    text-align:center;
+}
+.fixed-right #Users img
+{
+    max-width:90%;
+    max-height:150px;    
+}
+.fixed-right #Users p
+{
+    text-align:center;     
+}
+.fixed-right 
+{
+    position:fixed;
+    right:0px;
+    top:0px;  
+    width:25%;  
+    font-size:90%; 
+    color: #666; 
+    max-width:150px;
+}
+#Messages
+{
+    width: 75%;
+}
+
+
+
+li {list-style-type:none; margin-left:-15px;}
+.MessengerAvatar 
+{
+    height: 48px;
+    margin-left: 5px;
+    margin-top: 5px;
+    width: 48px;
+}
+.MessengerBars
+{
+	background: url(../img/colorbars.png) repeat-x;
+    width:100%;
+    height:102px;
+}
+.UserName 
+{
+	float: left;
+	height: 20px;
+	margin: 5px 0 5px 8px;
+	padding-left:4px;
+	padding-right:4px;
+	cursor: default;
+    color: white;
+    font-family: Arial;
+    font-size: 14px;
+    font-weight: bold;
+}
+.StatusMessage 
+{
+	float: left;
+	height: 20px;
+	margin: 5px 0 0 8px;
+	padding-left:4px;
+	padding-right:4px;
+	cursor: default;
+    font-family: Arial;
+    font-size: 12px;
+}
+.fixed-bottom 
+{
+    position:fixed;
+    bottom:0px;
+    width:100%;
+    padding-bottom:10px;
+    padding-top:10px;
+    background-color:White;
+    border-top:1px solid #d3d3d3;
+}
+#MessageBox 
+{
+    width:94%; 
+    margin-left:10px;
+    margin-right:10px;
+}
+.MessengerLineButtonHover
+{
+	background: url(../img/buttonhover.png);
+}
+#Messages 
+{
+  padding-bottom: 40px;
+}
+.MessangerToolbarItem
+{
+	float: left;
+	margin-left: 4px;
+	padding-top: 4px;
+	width: 26px;
+	height: 20px;
+	text-align: center;
+}
+.MessangerToolbarItemHover
+{
+	background: url(../img/toolbuttonhover.png);
+}
+/* ----------------------------Message History---------------------------- */
+.HistoryHeader 
+{
+    width: 100%;
+    background-color: #EFE9EF;
+    border-bottom: 2px solid #551155;
+    border-top: 2px solid #551155;
+    margin-bottom: 5px;
+    text-align: center;
+    font-size: 10px;
+    color: #551155;
+    font-weight: bold;
+    padding: 3px 0 3px 0;
+    cursor: default;
+}
+.HistoryTable 
+{
+    margin-left: 5px;
+    width: 587px;
+    border: 2px solid #551155;
+    font-size: 10px;
+    border-collapse: collapse;
+}
+.HistoryTable td, th
+{
+    padding: 2px 5px 2px 5px;    
+    border:2px solid #551155;
+}
+.HistoryTable th
+{
+    background-color: #AC8AAC; 
+}
+.HistoryTable td
+{
+    background-color: #EFE9EF; 
+}
+
+.ui-dialog-title 
+{
+    background-color:white;
+}
+/* ----------------------------Group Chat---------------------------- */
+.groupchatbody {
+    background-color: #EFE9EF;
+}
+
+
+/* ----------------------------Context Menu---------------------------- */
+.context-menu-list {
+    background: none repeat scroll 0 0 #EEEEEE;
+    border: 1px solid #DDDDDD;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+    display: inline-block;
+    font-family: Verdana,Arial,Helvetica,sans-serif;
+    font-size: 11px;
+    list-style-type: none;
+    margin: 0;
+    max-width: 250px;
+    min-width: 120px;
+    padding: 0;
+    position: absolute;
+}
+.context-menu-item {
+    -moz-user-select: -moz-none;
+    background-color: #EEEEEE;
+    padding: 2px 2px 2px 24px;
+    position: relative;
+}
+.context-menu-separator {
+    border-bottom: 1px solid #DDDDDD;
+    padding-bottom: 0;
+}
+.context-menu-item > label > input, .context-menu-item > label > textarea {
+    -moz-user-select: text;
+}
+.context-menu-item.hover {
+    background-color: #3399FF;
+    cursor: pointer;
+}
+.context-menu-item.disabled {
+    color: #666666;
+}
+.context-menu-input.hover, .context-menu-item.disabled.hover {
+    background-color: #EEEEEE;
+    cursor: default;
+}
+.context-menu-submenu:after {
+    color: #666666;
+    content: ">";
+    position: absolute;
+    right: 3px;
+    top: 0;
+    z-index: 1;
+}
+.context-menu-item.icon {
+    background-position: 4px 2px;
+    background-repeat: no-repeat;
+    min-height: 18px;
+}
+.context-menu-item.icon-online {
+    background-image: url("../img/status_online.png");
+}
+.context-menu-item.icon-away {
+    background-image: url("../img/status_away.png");
+}
+.context-menu-item.icon-busy {
+    background-image: url("../img/status_busy.png");
+}
+.context-menu-item.icon-phone {
+    background-image: url("../img/status_phone.png");
+}
+.context-menu-input > label > * {
+    vertical-align: top;
+}
+.context-menu-input > label > input[type="checkbox"], .context-menu-input > label > input[type="radio"] {
+    margin-left: -17px;
+}
+.context-menu-input > label > span {
+    margin-left: 5px;
+}
+.context-menu-input > label, .context-menu-input > label > input[type="text"], .context-menu-input > label > textarea, .context-menu-input > label > select {
+    -moz-box-sizing: border-box;
+    display: block;
+    width: 100%;
+}
+.context-menu-input > label > textarea {
+    height: 100px;
+}
+.context-menu-item > .context-menu-list {
+    display: none;
+    right: -5px;
+    top: 5px;
+}
+.context-menu-item.hover > .context-menu-list {
+    display: block;
+}
+.context-menu-accesskey {
+    text-decoration: underline;
+}

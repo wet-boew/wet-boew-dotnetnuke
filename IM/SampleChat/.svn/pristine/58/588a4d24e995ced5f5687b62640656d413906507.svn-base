@@ -1,0 +1,12 @@
+﻿
+Partial Class GroupChat
+    Inherits System.Web.UI.Page
+    Protected Sub Page_Load(sender As Object, e As System.EventArgs) Handles Me.Load
+        ltlEMail.Text = Session("Email").ToString
+    End Sub
+
+    Protected Sub ok_Click(sender As Object, e As EventArgs) Handles ok.Click
+        ltlGroupList.Text = Request.Form("CheckBoxList")
+        Page.ClientScript.RegisterStartupScript(Me.GetType(), "Script", "OpenGroupChat();", True)
+    End Sub
+End Class

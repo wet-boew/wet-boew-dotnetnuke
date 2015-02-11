@@ -1,0 +1,286 @@
+﻿//Status Options =======================================================================================================================
+$(function () {
+    $.contextMenu({
+        selector: '.UserName',
+        trigger: 'left',
+        callback: function (key, options) {
+            var m = key;
+            window.console && console.log(m) || UpdateStatus(m);
+        },
+        items: {
+            "Online": { name: "Online", icon: "online" },
+            "Away": { name: "Away", icon: "away" },
+            "Busy": { name: "Busy", icon: "busy" },
+            "Phone": { name: "Phone", icon: "phone" }
+        }
+    });
+});
+
+//Variables
+var WindowOpen = [];
+var LastMessage = 0;
+
+//Check the Users =======================================================================================================================
+function CheckUsers() {
+    $.getJSON('http://genesis.wst.pwgsc.gc.ca:7061/ChatService.ashx?callback=?',
+    {
+        Method: 'CheckUsers',
+        UserName: encodeURIComponent($("#varUserName").html()),
+        Email: encodeURIComponent($("#varEmail").html()),
+        Picture: encodeURIComponent($("#varImageLink").html())
+    },
+    function (myData) {
+        if (myData.error != undefined) { alert(myData.error); }
+        $("#Users").html(myData.response);
+        CheckRecentMessages();
+        ReCheckUsers();
+    });
+}
+
+//Load the user information======================================================================================================================
+function LoadChatPage() {
+    CheckMessage();
+    GetConversationUsers();
+}
+
+function GetConversationUsers() {
+    $.getJSON('http://genesis.wst.pwgsc.gc.ca:7061/ChatService.ashx?callback=?',
+    {
+        Method: 'GetConversationUsers',
+        FromEmail: $("#FromEmail").html(),
+        ToID: $("#ToID").html()
+    },
+    function (myData) {
+        if (myData.error != undefined) { alert(myData.error); }
+        $("#Users").html(myData.response);
+    });
+}
+
+
+//Update the user information on load =======================================================================================================================
+function UpdateUser() {
+    $.getJSON('http://genesis.wst.pwgsc.gc.ca:7061/ChatService.ashx?callback=?',
+    {
+        Method: 'UpdateUser',
+        UserName: encodeURIComponent($("#varUserName").html()),
+        Email: encodeURIComponent($("#varEmail").html()),
+        Picture: encodeURIComponent($("#varImageLink").html())
+    },
+    function (myData) {
+        //if (myData.error != undefined) { alert(myData.error); }
+    });
+}
+
+//Load the startup info =======================================================================================================================
+function LoadSession() {
+    $.getJSON('http://genesis.wst.pwgsc.gc.ca:7061/ChatService.ashx?callback=?',
+    {
+        Method: 'LoadSession',
+        Email: $("#varEmail").html()
+    },
+    function (myData) {
+        $("#UserName").html($("#varUserName").html() + " (" + "<img src='img/status_" + myData.userstatus + ".png' style='vertical-align:middle;' />" + myData.userstatus + ")" + "<img src='img/arrowdown.png' style='padding-left: 3px' />");
+        $("#StatusMessage").html(decodeURIComponent(myData.userstatusmessage));
+        //if (myData.error != undefined) { alert(myData.error); }
+    });
+}
+
+//Change Users Status =======================================================================================================================
+function UpdateStatus(m) {
+    $.getJSON('http://genesis.wst.pwgsc.gc.ca:7061/ChatService.ashx?callback=?',
+    {
+        Method: 'UpdateStatus',
+        Email: $("#varEmail").html(),
+        Status: m
+    },
+    function (myData) {
+        //if (myData.error != undefined) { alert(myData.error); }
+    });
+    $("#UserName").html($("#varUserName").html() + " (" + "<img src='img/status_" + m + ".png' style='vertical-align:middle;' />" + m + ")" + "<img src='img/arrowdown.png' style='padding-left: 3px' />");
+}
+
+
+function ReCheckUsers() {
+    setTimeout(CheckUsers, 10000);
+}
+
+//Check the Messages =======================================================================================================================
+function ScrollBottom() {
+    $("html, body").animate({ scrollTop: $(document).height() + 100 }, 500);
+}
+
+function CheckMessage() {
+    $.getJSON('http://genesis.wst.pwgsc.gc.ca:7061/ChatService.ashx?callback=?',
+    {
+        Method: 'CheckMessages',
+        FromEmail: $("#FromEmail").html(),
+        ToID: $("#ToID").html()
+    },
+    function (myData) {
+        if (LastMessage < myData.lastmessage) {
+            LastMessage = myData.lastmessage;
+            window.focus()
+            ScrollBottom();
+        }
+        //if (myData.error != undefined) { alert(myData.error); }
+        $("#Messages").html(decodeURIComponent(myData.response));
+        ReCheckMessages()
+    });    
+}
+
+function ReCheckMessages() {
+    setTimeout(CheckMessage, 5000);
+}
+
+//Check Recent Messages =======================================================================================================================
+function CheckRecentMessages() {
+    $.getJSON('http://genesis.wst.pwgsc.gc.ca:7061/ChatService.ashx?callback=?',
+    {
+        Method: 'CheckRecentMessages',
+        ToEmail: $("#varEmail").html()
+    },
+    function (myData) {
+        //if (myData.error != undefined) { alert(myData.error); }
+        var newMessages = myData.response.split(";");
+        for (var i = 0; i < newMessages.length; i++) {
+            if (newMessages[i] != "") {
+                OpenChat(newMessages[i]);
+            }
+        }
+    });
+}
+
+//Add a Message =======================================================================================================================
+function AddMessage() {
+    //Temporarily add it as a post
+    var NewMessage = '<li><b>' + $("#UserName").html() + '</b> ' + $("#MessageBox").val().replace(/script/gi,'') + '</li></ul>';
+    $("#Messages").html($("#Messages").html().replace("</ul>", "").replace("</UL>","") + NewMessage);
+    ScrollBottom();
+
+    //Save the Message
+    $.getJSON('http://genesis.wst.pwgsc.gc.ca:7061/ChatService.ashx?callback=?',
+    {
+        Method: 'AddMessage',
+        Message: encodeURIComponent($("#MessageBox").val()),
+        FromEmail: $("#FromEmail").html(),
+        ToID: $("#ToID").html()
+    },
+    function (myData) {
+        if (myData.error != undefined) { alert(myData.error); }            
+    });
+}
+
+//Open a new chat window =======================================================================================================================
+function OpenChat(ToID) {
+    if (WindowOpen[ToID] == undefined) {
+        WindowOpen[ToID] = window.open('/Chat.aspx?ID=' + ToID, 'Chat' + ToID, 'status=1,width=400,height=400,left=' + 300);
+    } else if (WindowOpen[ToID].closed) {
+        WindowOpen[ToID] = window.open('/Chat.aspx?ID=' + ToID, 'Chat' + ToID, 'status=1,width=400,height=400,left=' + 300);
+    } else {
+        WindowOpen[ToID].focus();
+    }
+}
+
+//Update status message =======================================================================================================================
+function EditStatusMessage() {
+    var divHtml = $("#StatusMessage").html();
+    var editableText = $("<input />");
+    editableText.val(divHtml);
+    $("#StatusMessage").replaceWith(editableText);
+    editableText.focus();
+    editableText.blur(editableTextBlurred);
+}
+
+function editableTextBlurred() {
+    var html = $(this).val().substring(0, 50);
+    var viewableText = $("<div id='StatusMessage' contenteditable='true' class='StatusMessage' hoverclass='MessengerLineButtonHover'>");
+    viewableText.html(html.replace(/script/gi, ""));
+    $(this).replaceWith(viewableText);
+    // setup the click event for this new div
+    $(viewableText).click(EditStatusMessage);
+    ChangeStatusMessage(html)
+};
+
+function ChangeStatusMessage(html) {
+    $.getJSON('http://genesis.wst.pwgsc.gc.ca:7061/ChatService.ashx?callback=?',
+    {
+        Method: 'ChangeStatusMessage',
+        Email: $("#varEmail").html(),
+        Message: encodeURIComponent(html)
+    },
+    function (myData) {
+        //if (myData.error != undefined) { alert(myData.error); }
+    });
+}
+
+//Show Chat History =======================================================================================================================
+function OpenMessageHistory() {
+    window.open('http://genesis.wst.pwgsc.gc.ca:7060/MessageHistory.aspx', null, 'resizable=1,status=0,menubar=0,width=600,height=400')
+}
+
+function GetMessageHistory() {
+    $.getJSON('http://genesis.wst.pwgsc.gc.ca:7061/ChatService.ashx?callback=?',
+    {
+        Method: 'GetMessageHistory',
+        Email: $("#Email").html()
+    },
+    function (myData) {
+        //if (myData.error != undefined) { alert(myData.error); }              
+        $("#MessageHistory").html(decodeURIComponent(myData.response));
+    });    
+}
+//Delete Chat History =======================================================================================================================
+function DeleteHistory() {
+    var r = confirm("Are you sure you want to delete all history?")
+    if (r == true) {
+        $.getJSON('http://genesis.wst.pwgsc.gc.ca:7061/ChatService.ashx?callback=?',
+        {
+            Method: 'DeleteHistory',
+            Email: $("#Email").html()
+        },
+        function (myData) {
+            //if (myData.error != undefined) { alert(myData.error); }               
+        });
+        setTimeout(GetMessageHistory, 500);
+    }
+    else {
+    }
+}
+//Group Chat =======================================================================================================================
+function GroupChat() {
+    window.open('http://genesis.wst.pwgsc.gc.ca:7060/GroupChat.aspx', null, 'resizable=1,status=0,menubar=0,width=300,height=500')
+}
+function GetGroupChatContacts() {
+    $.getJSON('http://genesis.wst.pwgsc.gc.ca:7061/ChatService.ashx?callback=?',
+    {
+        Method: 'GetGroupChatContacts',
+        Email: $("#Email").html()
+    },
+    function (myData) {        
+        //if (myData.error != undefined) { alert(myData.error); }              
+        $("#ContactsList").html(decodeURIComponent(myData.response));
+    });
+}
+function MaxCheckboxes() {
+        var max = 1;
+        var checkboxes = $('input[type="checkbox"]');
+        checkboxes.change(function(){
+            var current = checkboxes.filter(':checked').length;
+            checkboxes.filter(':not(:checked)').prop('disabled', current >= max);            
+        });
+}
+function OpenGroupChat() {
+    setTimeout(WindowOpen[$("#GroupList").html()] = window.open('/Chat.aspx?ID=' + $("#GroupList").html(), 'Chat' + $("#GroupList").html(), 'status=1,width=400,height=400,left=' + window.screenLeft + 300), 1000);        
+    window.close();
+    //$.getJSON('http://genesis.wst.pwgsc.gc.ca:7061/ChatService.ashx?callback=?',
+    //{
+    //    Method: 'OpenGroupChat',
+    //    Email: $("#Email").html(),
+    //    GroupList: $("#GroupList").html()        
+    //},
+    //function (myData) {
+    //    if (myData.error != undefined) { alert(myData.error); }
+    //});
+   // alert($("#GroupList").html())
+}
+

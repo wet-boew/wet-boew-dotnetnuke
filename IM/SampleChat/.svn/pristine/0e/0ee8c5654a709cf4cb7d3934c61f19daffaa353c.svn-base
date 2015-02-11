@@ -1,0 +1,84 @@
+﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Messenger.aspx.vb" Inherits="Messenger" %>
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title></title>
+    <link href="css/Messenger.css" rel="stylesheet" type="text/css" />
+
+    <script src="js/jquery-1.9.1.min.js" type="text/javascript"></script>
+    <script src="js/protoutil.js" type="text/javascript"></script>
+    <script src="js/jquery.contextMenu.js" type="text/javascript"></script>
+    <script src="js/Chat.js" type="text/javascript"></script>
+</head>
+<body>
+    <form id="form1" runat="server">
+        <div>
+            <asp:ScriptManager ID="ScriptManager1" runat="server">
+            </asp:ScriptManager>
+            <table border='0' cellspacing='0' cellpadding='0' class="MessengerBars">
+                <tr>
+                    <td>
+                        <img class="MessengerAvatar" width="100" height="100" runat="server" id="imgUser" />
+                    </td>
+                    <td>
+                        <table>
+                            <tr>
+                                <td>
+                                    <div id="UserName" class="UserName" hoverclass="MessengerLineButtonHover">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div id="StatusMessage" contenteditable="true" class="StatusMessage" hoverclass="MessengerLineButtonHover" onclick="EditStatusMessage()">
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <span class="MessangerToolbarItem" title="View message history" hoverclass="MessangerToolbarItemHover" onclick="OpenMessageHistory()">
+                            <img src="img/history.png" />
+                        </span>
+                        <span class="MessangerToolbarItem" title="Create group chat" hoverclass="MessangerToolbarItemHover" onclick="GroupChat()">
+                            <img src="img/invite.png" />
+                        </span>
+                        <span class="MessangerToolbarItem" title="Toggle sound" hoverclass="MessangerToolbarItemHover">
+                            <img src="img/sound_on.png" />
+                        </span>
+                        <span class="MessangerToolbarItem" title="View messenger help" hoverclass="MessangerToolbarItemHover">
+                            <img src="img/help.png" />
+                        </span>
+                    </td>
+                </tr>
+            </table>
+
+            <div id="Users"></div>
+            <div style="display: none">
+                <asp:Literal runat="server" ID="ltlEmail"></asp:Literal>
+                <asp:Literal runat="server" ID="ltlUserName"></asp:Literal>
+                <asp:Literal runat="server" ID="ltlPicture"></asp:Literal>
+            </div>
+
+            <script type="text/javascript">
+                $(document).ready(function () {
+                    CheckUsers();
+                    LoadSession();                   
+                });
+            </script>
+
+            <asp:UpdatePanel ID="UpdatePanel1" runat="server">
+                <ContentTemplate>
+                    <asp:Timer ID="MyTimer" runat="server" Interval="600000" Enabled="true">
+                    </asp:Timer>
+                </ContentTemplate>
+            </asp:UpdatePanel>
+        </div>
+    </form>
+</body>
+</html>
+
