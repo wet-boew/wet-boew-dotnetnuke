@@ -1,0 +1,17 @@
+﻿.carousel-s2 .glyphicon-pencil
+{
+    position: absolute;
+    background: #efefef;
+    padding: 8px;
+    cursor: pointer;
+    margin-left:5px;
+    margin-top:4px;
+}
+.cbxBig input 
+{
+ width:25px; 
+ height:25px; 
+ position: relative;
+ float: left;
+}
+
